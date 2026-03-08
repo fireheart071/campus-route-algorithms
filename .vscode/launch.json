@@ -1,0 +1,19 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Launch App",
+            "request": "launch",
+            "mainClass": "App",
+            "projectName": "MapAlgorithm"
+        },
+        {
+            "type": "java",
+            "name": "Launch MapRouteAppFX",
+            "request": "launch",
+            "mainClass": "app.MapRouteAppFX",
+            "projectName": "MapAlgorithm"
+        }
+    ]
+}
