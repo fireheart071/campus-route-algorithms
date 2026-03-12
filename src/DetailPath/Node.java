@@ -10,4 +10,12 @@ public class Node {
         this.latitude = latitude;
         this.longitude = longitude;
     }
+
+    public String getName() {
+        return name;
+    }
+
+    public double[] getCoordinates() {
+        return new double[] { latitude, longitude };
+    }
 }
