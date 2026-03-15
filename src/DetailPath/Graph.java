@@ -15,4 +15,13 @@ public class Graph {
         nodes.put(name, new Node(name, latitude, longitude));
         adjacencyList.computeIfAbsent(name, k -> new HashMap<>());
     }
+
+    public void addEdge(String sourceName, String destName, double distance, double time) {
+        adjacencyList.putIfAbsent(sourceName, new HashMap<>());
+        adjacencyList.get(sourceName).put(destName, new Edge(distance, time));
+    }
+
+    public HashMap<String, Edge> getEdges(String current) {
+        return adjacencyList.getOrDefault(current, new HashMap<>());
+    }
 }
