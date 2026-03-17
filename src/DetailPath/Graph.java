@@ -1,6 +1,7 @@
 package DetailPath;
 
 import java.util.HashMap;
+import java.util.Set;
 
 public class Graph {
     private HashMap<String, HashMap<String, Edge>> adjacencyList;
@@ -23,5 +24,13 @@ public class Graph {
 
     public HashMap<String, Edge> getEdges(String current) {
         return adjacencyList.getOrDefault(current, new HashMap<>());
+    }
+
+    public Node getNode(String name) {
+        return nodes.get(name);
+    }
+
+    public Set<String> getNodes() {
+        return adjacencyList.keySet();
     }
 }
