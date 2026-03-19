@@ -24,4 +24,13 @@ public class Route {
     public double getTotalTime() {
         return totalTime;
     }
+
+    @Override
+    public String toString() {
+        return "Route{" +
+                "path=" + path +
+                ", totalDistance=" + totalDistance +
+                ", totalTime=" + totalTime +
+                '}';
+    }
 }
