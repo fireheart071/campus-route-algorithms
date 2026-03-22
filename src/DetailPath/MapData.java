@@ -15,6 +15,12 @@ public class MapData {
         graph.addNode("Admin Office", 8, 18);
         graph.addNode("Science Lab", 18, 28);
 
+        // Now add edges using names + distance + time
+        graph.addEdge("Library", "Cafeteria", 0.1, 2);
+        graph.addEdge("Library", "Lecture Hall", 0.2, 5);
+        graph.addEdge("Cafeteria", "Gym", 0.3, 7);
+        graph.addEdge("Lecture Hall", "Gym", 0.4, 10);
+
         return graph;
     }
 }
