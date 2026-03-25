@@ -25,6 +25,11 @@ public class MapData {
         graph.addEdge("Parking Lot", "Cafeteria", 0.2, 5);
         graph.addEdge("Gym", "Parking Lot", 0.3, 8);
 
+        graph.addEdge("Dormitory", "Library", 0.6, 15);
+        graph.addEdge("Dormitory", "Cafeteria", 0.3, 6);
+        graph.addEdge("Bookstore", "Lecture Hall", 0.2, 4);
+        graph.addEdge("Bookstore", "Library", 0.1, 2);
+
         return graph;
     }
 }
