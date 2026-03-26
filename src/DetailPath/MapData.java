@@ -29,6 +29,9 @@ public class MapData {
         graph.addEdge("Dormitory", "Cafeteria", 0.3, 6);
         graph.addEdge("Bookstore", "Lecture Hall", 0.2, 4);
         graph.addEdge("Bookstore", "Library", 0.1, 2);
+        graph.addEdge("Admin Office", "Library", 0.4, 9);
+        graph.addEdge("Admin Office", "Science Lab", 0.3, 7);
+        graph.addEdge("Science Lab", "Gym", 0.2, 5);
 
         return graph;
     }
