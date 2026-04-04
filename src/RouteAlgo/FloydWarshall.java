@@ -54,6 +54,18 @@ public class FloydWarshall {
                 }
             }
         }
+
+        for (int k = 0; k < n; k++) {
+            for (int i = 0; i < n; i++) {
+                for (int j = 0; j < n; j++) {
+                    if (distance[i][k] + distance[k][j] < distance[i][j]) {
+                        distance[i][j] = distance[i][k] + distance[k][j];
+                        time[i][j] = time[i][k] + time[k][j];
+                        next[i][j] = next[i][k];
+                    }
+                }
+            }
+        }
     }
 
     public Route floydWarshallPath(String source, String destination) {
