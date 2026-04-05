@@ -69,6 +69,22 @@ public class FloydWarshall {
     }
 
     public Route floydWarshallPath(String source, String destination) {
-        return null;
+        if (indexMap == null || distance == null) {
+            throw new IllegalStateException("Run floydWarshallPath(Graph) first!");
+        }
+
+        int src = indexMap.get(source), dst = indexMap.get(destination);
+        if (next[src][dst] == -1)
+            return null;
+
+        List<String> path = new ArrayList<>();
+        int u = src;
+        while (u != dst) {
+            path.add(nodes.get(u));
+            u = next[u][dst];
+        }
+        path.add(nodes.get(dst));
+
+        return new Route(path, distance[src][dst], time[src][dst]);
     }
 }
