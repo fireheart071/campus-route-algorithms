@@ -7,6 +7,7 @@ import java.util.Map;
 
 import DetailPath.Graph;
 import DetailPath.MapData;
+import DetailPath.Edge;
 import DetailPath.Route;
 import RouteAlgo.AStar;
 import RouteAlgo.Dijkstra;
@@ -124,6 +125,30 @@ public class MapRouteAppFX extends Application {
             Text label = new Text(x - 20, y - 32, node);
             graphPane.getChildren().add(label);
             nodeNodes.add(label);
+        }
+        for (String src : graph.getNodes()) {
+            Map<String, Edge> edges = graph.getEdges(src);
+            double[] srcCoords = graph.getNode(src).getCoordinates();
+            double x1 = srcCoords[0] * scale + 50;
+            double y1 = srcCoords[1] * scale + 50;
+            for (String dst : edges.keySet()) {
+                double[] dstCoords = graph.getNode(dst).getCoordinates();
+                double x2 = dstCoords[0] * scale + 50;
+                double y2 = dstCoords[1] * scale + 50;
+                Line line = new Line(x1, y1, x2, y2);
+                line.setStroke(Color.GRAY);
+                line.setStrokeWidth(2);
+                graphPane.getChildren().add(line);
+                edgeNodes.add(line);
+                double mx = (x1 + x2) / 2;
+                double my = (y1 + y2) / 2;
+                String info = String.format("%.1fm, %.0fmin", edges.get(dst).getDistance() * 1000,
+                        edges.get(dst).getTime());
+                Text edgeLabel = new Text(mx, my, info);
+                edgeLabel.setFill(Color.DARKGRAY);
+                graphPane.getChildren().add(edgeLabel);
+                edgeNodes.add(edgeLabel);
+            }
         }
     }
 
