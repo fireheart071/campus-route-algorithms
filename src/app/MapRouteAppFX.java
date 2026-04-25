@@ -5,9 +5,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import DetailPath.Edge;
 import DetailPath.Graph;
 import DetailPath.MapData;
-import DetailPath.Edge;
 import DetailPath.Route;
 import RouteAlgo.AStar;
 import RouteAlgo.Dijkstra;
@@ -43,7 +43,6 @@ public class MapRouteAppFX extends Application {
         graph = MapData.loadGraph();
         BorderPane root = new BorderPane();
 
-        // Top bar
         HBox topBar = new HBox(10);
         topBar.setPadding(new Insets(10));
         algoCombo = new ComboBox<>();
@@ -54,11 +53,11 @@ public class MapRouteAppFX extends Application {
         startCombo.getItems().addAll(graph.getNodes());
         endCombo.getItems().addAll(graph.getNodes());
         Button findRouteBtn = new Button("Find Route");
+        findRouteBtn.setOnAction(_ -> findAndShowRoute());
         topBar.getChildren().addAll(new Label("Algorithm:"), algoCombo, new Label("Start:"), startCombo,
                 new Label("End:"), endCombo, findRouteBtn);
         root.setTop(topBar);
 
-        // Center graph pane with scrolling
         graphPane = new Pane();
         graphPane.setPrefSize(800, 600);
         drawGraph();
@@ -67,7 +66,6 @@ public class MapRouteAppFX extends Application {
         scrollPane.setFitToHeight(true);
         root.setCenter(scrollPane);
 
-        // Bottom bar
         routeSummary = new Label("Select start/end and click Find Route.");
         HBox bottomBar = new HBox(routeSummary);
         bottomBar.setPadding(new Insets(10));
@@ -115,6 +113,16 @@ public class MapRouteAppFX extends Application {
             door.setFill(Color.SADDLEBROWN);
             door.setStroke(Color.DARKGRAY);
             door.setStrokeWidth(1);
+            building.setOnMouseEntered(_ -> showNodeDetails(node, x, y));
+            building.setOnMouseExited(_ -> hideNodeDetails());
+            roof.setOnMouseEntered(_ -> showNodeDetails(node, x, y));
+            roof.setOnMouseExited(_ -> hideNodeDetails());
+            win1.setOnMouseEntered(_ -> showNodeDetails(node, x, y));
+            win1.setOnMouseExited(_ -> hideNodeDetails());
+            win2.setOnMouseEntered(_ -> showNodeDetails(node, x, y));
+            win2.setOnMouseExited(_ -> hideNodeDetails());
+            door.setOnMouseEntered(_ -> showNodeDetails(node, x, y));
+            door.setOnMouseExited(_ -> hideNodeDetails());
             nodeCircles.put(node, building);
             graphPane.getChildren().addAll(roof, building, win1, win2, door);
             nodeNodes.add(roof);
@@ -153,9 +161,79 @@ public class MapRouteAppFX extends Application {
     }
 
     private void findAndShowRoute() {
+        String start = startCombo.getValue();
+        String end = endCombo.getValue();
+        if (start == null || end == null || start.equals(end)) {
+            routeSummary.setText("Please select different start and end nodes.");
+            return;
+        }
+        String algo = algoCombo.getValue();
+        Route route = null;
+        if ("Dijkstra".equals(algo)) {
+            route = new Dijkstra().dijkstraPath(graph, start, end);
+        } else if ("A*".equals(algo)) {
+            route = new AStar().AStarPath(graph, start, end);
+        } else if ("Floyd-Warshall".equals(algo)) {
+            FloydWarshall fw = new FloydWarshall();
+            fw.floydWarshallPath(graph);
+            route = fw.floydWarshallPath(start, end);
+        }
+        if (route == null || route.getPath().size() < 2) {
+            routeSummary.setText("No route found.");
+            highlightRoute(null);
+            return;
+        }
+        routeSummary.setText(String.format("Shortest Path: %s | Distance: %.1fm | Time: %.0f min",
+                String.join(" \u2192 ", route.getPath()), route.getTotalDistance() * 1000, route.getTotalTime()));
+        highlightRoute(route.getPath());
     }
 
     private void highlightRoute(List<String> path) {
+        drawGraph();
+        if (path == null || path.size() < 2)
+            return;
+        double scale = 20;
+        for (int i = 0; i < path.size() - 1; i++) {
+            String src = path.get(i);
+            String dst = path.get(i + 1);
+            double[] srcCoords = graph.getNode(src).getCoordinates();
+            double[] dstCoords = graph.getNode(dst).getCoordinates();
+            double x1 = srcCoords[0] * scale + 50;
+            double y1 = srcCoords[1] * scale + 50;
+            double x2 = dstCoords[0] * scale + 50;
+            double y2 = dstCoords[1] * scale + 50;
+            Line line = new Line(x1, y1, x2, y2);
+            line.setStroke(Color.RED);
+            line.setStrokeWidth(5);
+            graphPane.getChildren().add(line);
+        }
+        for (String node : path) {
+            javafx.scene.shape.Rectangle c = nodeCircles.get(node);
+            if (c != null) {
+                c.setFill(Color.LIMEGREEN);
+                c.setStroke(Color.DARKGREEN);
+                c.setStrokeWidth(3);
+            }
+        }
+    }
+
+    private Text nodeDetailText = null;
+
+    private void showNodeDetails(String node, double x, double y) {
+        if (nodeDetailText != null)
+            graphPane.getChildren().remove(nodeDetailText);
+        DetailPath.Node n = graph.getNode(node);
+        nodeDetailText = new Text(x + 20, y,
+                String.format("%s\n(%.2f, %.2f)", node, n.getCoordinates()[0], n.getCoordinates()[1]));
+        nodeDetailText.setFill(Color.DARKBLUE);
+        nodeDetailText.setStyle("-fx-font-weight: bold; -fx-background-color: white;");
+        graphPane.getChildren().add(nodeDetailText);
+    }
+
+    private void hideNodeDetails() {
+        if (nodeDetailText != null)
+            graphPane.getChildren().remove(nodeDetailText);
+        nodeDetailText = null;
     }
 
     public static void main(String[] args) {
